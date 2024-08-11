@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function SignUp() {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-  const [empty,setEmpty]= useState(false);
+  const [empty, setEmpty] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -27,8 +27,8 @@ function SignUp() {
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.message || "Something went wrong");
-        }else{
-          navigate('/')
+        } else {
+          navigate("/");
         }
       } catch (err) {
         setError(err.message);
