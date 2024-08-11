@@ -9,4 +9,4 @@ const User = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("SignUp", User);
+module.exports = mongoose.model("User", User);

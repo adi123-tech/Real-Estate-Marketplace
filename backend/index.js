@@ -5,11 +5,13 @@ app.use(express.json());
 app.use(CORS());
 
 require("./mongodb/Config");
-const data = require("./mongodb/UserSchema");
 
-app.get("/hello", (req, res) => {
-  res.send({ msg: "Hello" });
-});
+const userRoute = require('./routes/user.router');
+const authRoute = require('./routes/auth.router')
+
+app.use('/api/user',userRoute)
+app.use('/api/auth',authRoute)
+
 
 app.listen(5000, () => {
   console.log("Server running on port 5000....................?");
