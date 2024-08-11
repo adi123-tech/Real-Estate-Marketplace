@@ -1,7 +1,7 @@
 const userModel = require("../mongodb/UserSchema");
 const bcryptjs = require("bcryptjs");
 
-module.exports = async (req, res) => {
+module.exports = async (req, res, next) => {
   const { username, email, password } = req.body;
   const hashpassword = bcryptjs.hashSync(password, 10);
   try {
@@ -12,6 +12,6 @@ module.exports = async (req, res) => {
     });
     res.json({ msg: data });
   } catch (err) {
-    res.status(400).send({ msg: err });
+    next(err);
   }
 };
