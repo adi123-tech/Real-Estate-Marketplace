@@ -4,10 +4,13 @@ const CORS = require("cors");
 app.use(express.json());
 app.use(CORS());
 
+require("./mongodb/Config");
+const data = require("./mongodb/UserSchema");
+
 app.get("/hello", (req, res) => {
   res.send({ msg: "Hello" });
 });
 
 app.listen(5000, () => {
-  console.log("Server running on port 5000....................");
+  console.log("Server running on port 5000....................?");
 });
