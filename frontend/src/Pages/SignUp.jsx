@@ -6,6 +6,7 @@ function SignUp() {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const [empty,setEmpty]= useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -35,7 +36,7 @@ function SignUp() {
         setLoading(false);
       }
     } else {
-      console.log("Please fill empty fields");
+      setEmpty(true);
     }
   }
   return (
@@ -83,6 +84,7 @@ function SignUp() {
         </Link>
       </div>
       {error && <p className="text-red-500 mt-5">{error}</p>}
+      {empty && <p className="text-red-500 mt-5">Fill the empty fields</p>}
     </div>
   );
 }
