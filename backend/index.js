@@ -5,10 +5,23 @@ app.use(express.json());
 app.use(CORS());
 
 require("./mongodb/Config");
-const data = require("./mongodb/UserSchema");
 
-app.get("/hello", (req, res) => {
-  res.send({ msg: "Hello" });
+const userRoute = require("./routes/user.router");
+const { signinRoute, signupRoute } = require("./routes/auth.router");
+
+app.use("/api/user", userRoute);
+app.use("/api/auth", signinRoute);
+app.use("/api/auth", signupRoute);
+
+//middleware
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+  const message = err.message || "internal server error";
+  return res.status(statusCode).json({
+    success: false,
+    statusCode,
+    message,
+  });
 });
 
 app.listen(5000, () => {
