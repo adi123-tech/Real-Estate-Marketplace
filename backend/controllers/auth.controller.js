@@ -33,7 +33,9 @@ const signin = async (req, res, next) => {
     }
 
     //JWT
-    const token = JWT.sign({ id: validUser._id }, process.env.JWT_SecretKey);
+    const token = JWT.sign({ id: validUser._id }, process.env.JWT_SecretKey, {
+      expiresIn: "1h",
+    });
     const { password: pass, ...validUserWithoutPassword } = validUser._doc;
 
     res
