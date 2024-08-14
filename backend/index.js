@@ -7,11 +7,16 @@ app.use(CORS());
 require("./mongodb/Config");
 
 const userRoute = require("./routes/user.router");
-const { signinRoute, signupRoute } = require("./routes/auth.router");
+const {
+  signinRoute,
+  signupRoute,
+  googleRoute,
+} = require("./routes/auth.router");
 
 app.use("/api/user", userRoute);
 app.use("/api/auth", signinRoute);
 app.use("/api/auth", signupRoute);
+app.use("/api/auth", googleRoute);
 
 //middleware
 app.use((err, req, res, next) => {
