@@ -1,8 +1,10 @@
 const express = require("express");
 const app = express();
 const CORS = require("cors");
+const cookieParser = require('cookie-parser')
 app.use(express.json());
 app.use(CORS());
+app.use(cookieParser());
 
 require("./mongodb/Config");
 
