@@ -2,7 +2,7 @@ const errorHandler = require("../utils/error");
 const bcryptjs = require("bcryptjs");
 const User = require("../mongodb/UserSchema");
 
-module.exports = async (req, res, next) => {
+const updateUser = async (req, res, next) => {
   if (req.user.id != req.params.id)
     return next(errorHandler(401, "You cannot update others account"));
 
@@ -26,7 +26,21 @@ module.exports = async (req, res, next) => {
     const { password, ...rest } = updatedUser._doc;
     res.status(200).json(rest);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     next(error);
   }
 };
+
+const deleteUser = async (req, res, next) => {
+  console.log(req.user.id)
+  if (req.user.id != req.params.id)
+    return errorHandler(next(401, "you can delete others account"));
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    res.status(200).json("User has been deleted");
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { updateUser, deleteUser };

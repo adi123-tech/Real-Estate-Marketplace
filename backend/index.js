@@ -8,14 +8,15 @@ app.use(cookieParser());
 
 require("./mongodb/Config");
 
-const userRoute = require("./routes/user.router");
+const {updateUserRoute,deleteUserRoute} = require("./routes/user.router");
 const {
   signinRoute,
   signupRoute,
   googleRoute,
 } = require("./routes/auth.router");
 
-app.use("/api/user", userRoute);
+app.use("/api/user", updateUserRoute);
+app.use("/api/user", deleteUserRoute);
 app.use("/api/auth", signinRoute);
 app.use("/api/auth", signupRoute);
 app.use("/api/auth", googleRoute);
