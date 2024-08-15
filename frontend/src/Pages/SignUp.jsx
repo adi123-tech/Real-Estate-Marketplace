@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import OAuth from "../Components/OAuth";
+import { useSelector } from "react-redux";
 
 function SignUp() {
   const [userName, setUserName] = useState("");
@@ -10,6 +11,13 @@ function SignUp() {
   const [empty, setEmpty] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const { currentUser } = useSelector((state) => state.user);
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/");
+    }
+  }, [currentUser]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -77,7 +85,7 @@ function SignUp() {
         >
           {loading ? "Loading..." : "Sign Up"}
         </button>
-        <OAuth/>
+        <OAuth />
       </form>
       <div className="flex gap-2 mt-5">
         <p>Have an account?</p>

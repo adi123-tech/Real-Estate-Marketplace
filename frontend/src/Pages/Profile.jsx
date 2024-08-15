@@ -8,14 +8,22 @@ import {
 import { useSelector } from "react-redux";
 import { useRef } from "react";
 import { app } from "../Firebase";
+import {
+  updateUserStart,
+  updateUserSuccess,
+  updateUserFailure,
+} from "../../redux/user/userSlice";
+import { useDispatch } from "react-redux";
 
 function Profile() {
   const [file, setFile] = useState(undefined);
   const [FileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
   const [filePerc, setFilePerc] = useState(0);
+  const [success, setSuccess] = useState(false);
   const fileref = useRef(null);
-  const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const { currentUser, error, loading } = useSelector((state) => state.user);
 
   useEffect(() => {
     if (file) {
@@ -23,12 +31,17 @@ function Profile() {
     }
   }, [file]);
 
+  setTimeout(() => {
+    if (success) {
+      setSuccess(false);
+    }
+  }, 3000);
+
   const handleFileUpload = () => {
     const storage = getStorage(app);
     const fileName = new Date().getTime() + file.name;
     const storageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(storageRef, file);
-
     uploadTask.on(
       "state_changed",
       (snapshot) => {
@@ -48,10 +61,36 @@ function Profile() {
       }
     );
   };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(updateUserStart());
+      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(updateUserFailure(data.message));
+        return;
+      }
+      dispatch(updateUserSuccess(data));
+      setSuccess(true);
+    } catch (error) {
+      dispatch(updateUserFailure(error.message));
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl text-center font-semibold my-7">Profile</h1>
-      <form className="flex flex-col gap-4">
+      <form onSubmit={handleUpdate} className="flex flex-col gap-4">
         <input
           type="file"
           ref={fileref}
@@ -70,7 +109,9 @@ function Profile() {
         />
         <p className="text-sm self-center">
           {FileUploadError ? (
-            <span className="text-red-700">Image Upload Error (size should be less than 2MB)</span>
+            <span className="text-red-700">
+              Image Upload Error (size should be less than 2MB)
+            </span>
           ) : filePerc > 0 && filePerc < 100 ? (
             <span className="text-green-700">{`Uploading ${filePerc}%`}</span>
           ) : filePerc === 100 ? (
@@ -80,40 +121,41 @@ function Profile() {
           )}
         </p>
         <input
+          defaultValue={currentUser.username}
           type="text"
           placeholder="username"
           className="border p-3 rounded-lg"
           id="username"
-          onChange={(e) => {
-            setUsername(e.target.value);
-          }}
+          onChange={handleChange}
         />
         <input
           type="text"
           placeholder="email"
+          defaultValue={currentUser.email}
           className="border p-3 rounded-lg"
           id="email"
-          onChange={(e) => {
-            setEmail(e.target.value);
-          }}
+          onChange={handleChange}
         />
         <input
-          type="text"
+          type="password"
           placeholder="password"
           className="border p-3 rounded-lg"
           id="password"
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
+          onChange={handleChange}
         />
-        <button className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
-          Update
+        <button
+          disabled={loading}
+          className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
+        >
+          {loading ? "Loading..." : "Update"}
         </button>
       </form>
       <div className="flex justify-between mt-5">
         <span className="text-red-700 cursor-pointer">Delete Account</span>
         <span className="text-red-700 cursor-pointer">Sign Out</span>
       </div>
+      {error && <p className="text-red-500 mt-5">{error}</p>}
+      {success && <p className="text-green-500 mt-5">Sucessfully Updated</p>}
     </div>
   );
 }
