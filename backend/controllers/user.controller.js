@@ -32,7 +32,6 @@ const updateUser = async (req, res, next) => {
 };
 
 const deleteUser = async (req, res, next) => {
-  console.log(req.user.id)
   if (req.user.id != req.params.id)
     return errorHandler(next(401, "you can delete others account"));
   try {
