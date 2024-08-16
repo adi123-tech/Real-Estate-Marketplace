@@ -1,18 +1,19 @@
 const express = require("express");
 const app = express();
 const CORS = require("cors");
-const cookieParser = require('cookie-parser')
+const cookieParser = require("cookie-parser");
 app.use(express.json());
 app.use(CORS());
 app.use(cookieParser());
 
 require("./mongodb/Config");
 
-const {updateUserRoute,deleteUserRoute} = require("./routes/user.router");
+const { updateUserRoute, deleteUserRoute } = require("./routes/user.router");
 const {
   signinRoute,
   signupRoute,
   googleRoute,
+  signoutRoute,
 } = require("./routes/auth.router");
 
 app.use("/api/user", updateUserRoute);
@@ -20,6 +21,7 @@ app.use("/api/user", deleteUserRoute);
 app.use("/api/auth", signinRoute);
 app.use("/api/auth", signupRoute);
 app.use("/api/auth", googleRoute);
+app.use("/api/auth", signoutRoute);
 
 //middleware
 app.use((err, req, res, next) => {
