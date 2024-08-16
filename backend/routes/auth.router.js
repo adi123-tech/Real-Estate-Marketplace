@@ -9,6 +9,6 @@ const {
 const signupRoute = router.post("/signup", signup);
 const signinRoute = router.post("/signin", signin);
 const googleRoute = router.post("/google", google);
-const signoutRoute = router.post("/signout", signout);
+const signoutRoute = router.get("/signout", signout);
 
 module.exports = { signupRoute, signinRoute, googleRoute, signoutRoute };

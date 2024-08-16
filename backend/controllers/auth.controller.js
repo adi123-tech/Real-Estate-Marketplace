@@ -92,7 +92,7 @@ const google = async (req, res, next) => {
 const signout = async (req, res, next) => {
   try {
     res.clearCookie("access_token");
-    res.status(200).send("User has been log out Successfully");
+    res.status(200).json("User has been logged out successfully");
   } catch (error) {
     next(error);
   }

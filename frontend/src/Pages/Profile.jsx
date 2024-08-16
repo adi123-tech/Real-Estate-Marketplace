@@ -20,6 +20,7 @@ import {
   signoutUserFailure,
 } from "../../redux/user/userSlice";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 function Profile() {
   const [file, setFile] = useState(undefined);
@@ -28,6 +29,7 @@ function Profile() {
   const [filePerc, setFilePerc] = useState(0);
   const [success, setSuccess] = useState(false);
   const fileref = useRef(null);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { currentUser, error, loading } = useSelector((state) => state.user);
 
@@ -110,10 +112,10 @@ function Profile() {
     }
   };
 
-  const handleSignOut = async ()=>{
+  const handleSignOut = async () => {
     try {
       dispatch(signoutUserStart());
-      const res = await fetch('/api/auth/signout');
+      const res = await fetch("/api/auth/signout");
       const data = await res.json();
       if (data.success === false) {
         dispatch(signoutUserFailure(data.message));
@@ -121,9 +123,9 @@ function Profile() {
       }
       dispatch(signoutUserSuccess(data));
     } catch (error) {
-      dispatch(signoutUserFailure(error));
+      dispatch(signoutUserFailure(error.message));
     }
-  }
+  };
 
   return (
     <div className="p-3 max-w-lg mx-auto">
@@ -192,7 +194,9 @@ function Profile() {
         <span className="text-red-700 cursor-pointer" onClick={handleDelete}>
           Delete Account
         </span>
-        <span onClick={handleSignOut} className="text-red-700 cursor-pointer">Sign Out</span>
+        <span onClick={handleSignOut} className="text-red-700 cursor-pointer">
+          Sign Out
+        </span>
       </div>
       {error && <p className="text-red-500 mt-5">{error}</p>}
       {success && <p className="text-green-500 mt-5">Sucessfully Updated</p>}
