@@ -15,6 +15,7 @@ const {
   googleRoute,
   signoutRoute,
 } = require("./routes/auth.router");
+const { createListRouter } = require("./routes/listing.router");
 
 app.use("/api/user", updateUserRoute);
 app.use("/api/user", deleteUserRoute);
@@ -22,6 +23,7 @@ app.use("/api/auth", signinRoute);
 app.use("/api/auth", signupRoute);
 app.use("/api/auth", googleRoute);
 app.use("/api/auth", signoutRoute);
+app.use("/api/listing", createListRouter);
 
 //middleware
 app.use((err, req, res, next) => {
